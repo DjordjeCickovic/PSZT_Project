@@ -47,10 +47,10 @@ public class Phenotype
     }
     
     /**
-     * Funkcja krzyzujaca dwoch osobnikow i zwracajaca pare ich dzieci
-     * @param mom - mama
-     * @param dad - tata
-     * @return children - para splodzonych dzieci
+     * Function crosses given parents and returns their two children
+     * @param mom 
+     * @param dad 
+     * @return children 
      */
     public static Set<Phenotype> crossingOver(Phenotype mom, Phenotype dad) 
     {       	
@@ -58,8 +58,7 @@ public class Phenotype
     	Set<Phenotype> children = new TreeSet<Phenotype>();
     	double a1, a2;
     	double x1, x2, sigma1, sigma2;
-    	
-    	// wyznaczenie liczb a1 i a2
+    
     	a1 = ThreadLocalRandom.current().nextDouble(0, 1);
     	a2 = 1 - a1;
     	    	

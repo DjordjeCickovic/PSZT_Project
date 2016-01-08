@@ -1,8 +1,6 @@
 package Algorithm;
 
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -66,10 +64,10 @@ public class Phenotype
      * @param dad second phenotype taking part in crossing
      * @return children 
      */
-    public static Set<Phenotype> crossingOver(Phenotype mom, Phenotype dad) 
+    public static List<Phenotype> crossingOver(Phenotype mom, Phenotype dad)
     {       	
     	Phenotype ch1, ch2;
-    	Set<Phenotype> children = new TreeSet<>();
+    	List<Phenotype> children = new LinkedList<>();
     	double a1, a2;
     	double x1, x2, sigma1, sigma2;
     

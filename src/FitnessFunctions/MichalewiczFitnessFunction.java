@@ -6,9 +6,24 @@ public class MichalewiczFitnessFunction implements FitnessFunction<Phenotype> {
 
     @Override
     public boolean belongsToDomain(Phenotype phenotype) {
-        return phenotype.getX1()>=0 && phenotype.getX1()<=-Math.PI &&
+        return phenotype.getX1()>=0 && phenotype.getX1()<=Math.PI &&
                 phenotype.getX2()>=0 && phenotype.getX2()<=Math.PI;
     }
+
+    @Override
+    public double getMinPhenotypeX1() {
+        return 0;
+    }
+    @Override
+    public double getMaxPhenotypeX1() {
+        return Math.PI;
+    }
+    @Override
+    public double getMinPhenotypeX2() {
+        return 0;
+    }
+    @Override
+    public double getMaxPhenotypeX2() {return Math.PI;}
 
     @Override
     public double applyAsDouble(Phenotype value) {

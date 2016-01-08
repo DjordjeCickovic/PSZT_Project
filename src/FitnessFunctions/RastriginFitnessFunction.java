@@ -4,11 +4,21 @@ import Algorithm.Phenotype;
 
 public class RastriginFitnessFunction implements FitnessFunction<Phenotype> {
 
+
     @Override
     public boolean belongsToDomain(Phenotype phenotype) {
-        return phenotype.getX1()>=-1 && phenotype.getX1()<=-1 &&
+        return phenotype.getX1()>=-1 && phenotype.getX1()<=1 &&
                 phenotype.getX2()>=-1 && phenotype.getX2()<=1;
     }
+
+    @Override
+    public double getMinPhenotypeX1() {return -1;}
+    @Override
+    public double getMaxPhenotypeX1() {return 1;}
+    @Override
+    public double getMinPhenotypeX2() {return -1;}
+    @Override
+    public double getMaxPhenotypeX2() {return 1;}
 
     @Override
     public double applyAsDouble(Phenotype value) {

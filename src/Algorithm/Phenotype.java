@@ -1,5 +1,6 @@
 package Algorithm;
 
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -7,11 +8,11 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Class represents single phenotype. It holds traits of individual from the population.
  */
-public class Phenotype 
+public class Phenotype
 {
 	private X x;
 	private Sigma sigma;
-	
+
     public Phenotype(double x1, double x2, double sigma1, double sigma2) 
     {
     	x = new X(x1, x2);
@@ -23,7 +24,20 @@ public class Phenotype
      */
     public void mutate() 
     {
-    	
+        double tauPrime = 1/(Math.sqrt(2*2));
+        double tau = 1/(Math.sqrt(2*Math.sqrt(2)));
+
+        Random random = new Random();
+
+        double xi = random.nextGaussian();
+
+        double newSigma1 = getSigma1()*Math.exp( tauPrime*xi + tau*random.nextGaussian());
+        double newSigma2 = getSigma2()*Math.exp( tauPrime*xi + tau*random.nextGaussian());
+
+        double newX1 = getX1() + newSigma1*random.nextGaussian();
+        double newX2 = getX2() + newSigma2*random.nextGaussian();
+
+        setTraits(newX1, newX2, newSigma1, newSigma2);
     }
 
     public double getX1() 
@@ -48,14 +62,14 @@ public class Phenotype
     
     /**
      * Function crosses given parents and returns their two children
-     * @param mom 
-     * @param dad 
+     * @param mom first phenotype taking part in thr crossing
+     * @param dad second phenotype taking part in crossing
      * @return children 
      */
     public static Set<Phenotype> crossingOver(Phenotype mom, Phenotype dad) 
     {       	
     	Phenotype ch1, ch2;
-    	Set<Phenotype> children = new TreeSet<Phenotype>();
+    	Set<Phenotype> children = new TreeSet<>();
     	double a1, a2;
     	double x1, x2, sigma1, sigma2;
     
@@ -64,20 +78,28 @@ public class Phenotype
     	    	
     	x1= a1*mom.getX1() + a2*dad.getX1();
     	x2= a1*mom.getX2() + a2*dad.getX2();
-    	sigma1 = a1*mom.getSigma1() + a2*dad.getSigma1();
-    	sigma2 = a1*mom.getSigma1() + a2*dad.getSigma1();
+    	sigma1 = a1*mom.getSigma1() + a2*dad.getSigma2();
+    	sigma2 = a1*mom.getSigma1() + a2*dad.getSigma2();
     	ch1 = new Phenotype(x1, x2, sigma1, sigma2);
     	
     	x1= a2*mom.getX1() + a1*dad.getX1();
     	x2= a2*mom.getX2() + a1*dad.getX2();
-    	sigma1 = a2*mom.getSigma1() + a1*dad.getSigma1();
-    	sigma2 = a2*mom.getSigma1() + a1*dad.getSigma1();
+    	sigma1 = a2*mom.getSigma1() + a1*dad.getSigma2();
+    	sigma2 = a2*mom.getSigma1() + a1*dad.getSigma2();
     	ch2 = new Phenotype(x1, x2, sigma1, sigma2);
     	
     	children.add(ch1);
     	children.add(ch2);
     	
     	return children;
+    }
+
+    private void setTraits(double x1, double x2, double sigma1, double sigma2)
+    {
+        this.x.x1 = x1;
+        this.x.x2 = x2;
+        this.sigma.sigma1 = sigma1;
+        this.sigma.sigma2 = sigma2;
     }
 }
 

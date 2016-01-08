@@ -1,19 +1,23 @@
 package Algorithm;
 
+import FitnessFunctions.FitnessFunction;
+
 import java.util.Set;
-import java.util.function.ToDoubleFunction;
 
 public class Population {
 
     Set<Phenotype> population;
 
     /**Function that allows to evaluate the adaptation of phenotype.*/
-    ToDoubleFunction<Phenotype> fitnessFunction;
+    FitnessFunction fitnessFunction;
 
 
-    public Population(ToDoubleFunction<Phenotype> fitnessFunction) {}
+    public Population(FitnessFunction fitnessFunction) {
+        this.fitnessFunction = fitnessFunction;
+    }
 
     public double optimize() {throw new UnsupportedOperationException();}
+
 
     private void reproduce() {}
 

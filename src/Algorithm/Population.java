@@ -6,6 +6,7 @@ import java.util.*;
 
 public class Population {
 
+    /**Phenotypes present in the population.*/
     private List<Phenotype> population;
     /**Function that allows to evaluate the adaptation of phenotype.*/
     private FitnessFunction<Phenotype> fitnessFunction;
@@ -33,8 +34,12 @@ public class Population {
     }
 
 
-
-
+    /**
+     * @param newPopulationSize Size that generated population will have.
+     * @return Population that is containing phenotypes from the pool of population on which
+     *         this method was called. Phenotypes may be repeated, because they are choosen
+     *         randomly with returning.
+     */
     public Population designateNewPopulation(long newPopulationSize)
     {
         Population designated = new Population(fitnessFunction);
@@ -44,6 +49,11 @@ public class Population {
         return designated;
     }
 
+    /**
+     * @return Population that originated from population on which this method was called.
+     *         It is created as a result of crossing pairs of phenotypes from origin population
+     *         and then mutation.
+     */
     public Population reproduce()
     {
 
@@ -82,12 +92,20 @@ public class Population {
         return children;
     }
 
+    /**
+     * Choose the fittest phenotypes from population basing on fitness function.
+     * This function uses roulette wheel algorithm with scaling of fitness functions
+     * value.
+     * @param sizeOfNewPopulation How many phenotypes will be chosen.
+     * @param evolutionaryPressure For the bigger values of this parameters, weaker
+     *                             phenotypes are less likely to be chosen to favour
+     *                             stronger ones.
+     * @return  New population consisting of chosen phenotypes.
+     */
     public Population chooseTheFittest(int sizeOfNewPopulation, double evolutionaryPressure)
     {
+        //Computing parameters that then will be used to scale fitness function values.
         double averageFitnessValue = getAverageFitnessFunctionValue();
-        //Temporary...
-       // System.out.println(averageFitnessValue +" max:"+getBestFitnessFunctionValue() + " evolutionaryPressure " + evolutionaryPressure);
-
         double standardDeviation = 0;
         for(Phenotype p : population)
         {
@@ -96,6 +114,7 @@ public class Population {
         standardDeviation = standardDeviation/population.size();
         standardDeviation = Math.sqrt(standardDeviation);
 
+        //Creating roulette.
         List<Double> roulette = new LinkedList<>();
         double rouletteSize = 0;
         for(Phenotype p : population)
@@ -106,6 +125,7 @@ public class Population {
             rouletteSize+=rouletteAssignation;
         }
 
+        //Choosing phenotypes.
         Random random  = new Random();
         Population chosen = new Population(fitnessFunction);
         for(int i = 0; i< sizeOfNewPopulation; ++i)

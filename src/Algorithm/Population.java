@@ -3,6 +3,7 @@ package Algorithm;
 import FitnessFunctions.FitnessFunction;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Population {
 
@@ -78,7 +79,7 @@ public class Population {
         }
 
         //Mutating embryos
-        children.population.stream().map(embryo ->
+        children.population = children.population.stream().map(embryo ->
         {
             Phenotype mutatedEmbryo;
             do {
@@ -87,7 +88,7 @@ public class Population {
             }
             while (!fitnessFunction.belongsToDomain(mutatedEmbryo));
             return mutatedEmbryo;
-        });
+        }).collect(Collectors.toList());
 
         return children;
     }

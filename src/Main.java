@@ -27,18 +27,40 @@ public class Main {
     	
     	
         
-        
+    	ApplicationFrame frame = new ApplicationFrame("Program");
         OptimisationAlgorithm alg = new OptimisationAlgorithm();
 
-        alg.optimize(new RastriginFitnessFunction());
+        if(args.length==0)
+        	return;
+        
+        switch(args[0])
+        {
+        case "Rastrigin":
+        	alg.optimize(new RastriginFitnessFunction());
         Phenotype p = alg.getBestPhenotype().get();
         System.out.println("Rastrigin:");
         System.out.println("Ext: x1 = " + p.getX1() + "  x2 = " + p.getX2() +
                 " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
+        break;
+        case "Schaffer":
+        	alg.optimize(new SchafferFitnessFunction());
+            p = alg.getBestPhenotype().get();
+            System.out.println("Schafffer:");
+            System.out.println("Ext: x1 = " + p.getX1() + "  x2 = " + p.getX2() +
+                    " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
+            break;
+        case "Michalewicz":
+        	alg.optimize(new MichalewiczFitnessFunction());
+        p = alg.getBestPhenotype().get();
+        System.out.println("Michalewicz:");
+        System.out.println("Ext: x1 = " + p.getX1() +  "  x2 = " + p.getX2()+
+                " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
+        	break;
+        default:
+        	return;
+        }
         
-        
-        ApplicationFrame frame = new ApplicationFrame("Program");
-        
+     
         frame.setContentPane(generateChart(alg.getBestFitnessFunctionHistory(),alg.getAverageFitnessFunctionHistory()));
         frame.pack();
         RefineryUtilities.centerFrameOnScreen(frame);
@@ -46,17 +68,9 @@ public class Main {
         
         
         
-        alg.optimize(new SchafferFitnessFunction());
-        p = alg.getBestPhenotype().get();
-        System.out.println("Schafffer:");
-        System.out.println("Ext: x1 = " + p.getX1() + "  x2 = " + p.getX2() +
-                " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
+        
 
-        alg.optimize(new MichalewiczFitnessFunction());
-        p = alg.getBestPhenotype().get();
-        System.out.println("Michalewicz:");
-        System.out.println("Ext: x1 = " + p.getX1() +  "  x2 = " + p.getX2()+
-                " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
+        
     }
     
     public static ChartPanel generateChart(List<Double> BestValues,List<Double> AverageValues)
@@ -92,7 +106,7 @@ public class Main {
     	false // Configure chart to generate URLs?
     	);
         ChartPanel chartPanel = new ChartPanel(chart, false);
-        chartPanel.setPreferredSize(new Dimension(500, 500));
+        chartPanel.setPreferredSize(new Dimension(800, 800));
     	return chartPanel;
 
     }

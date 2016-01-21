@@ -1,21 +1,18 @@
 import java.awt.Dimension;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import Algorithm.OptimisationAlgorithm;
 import Algorithm.Phenotype;
+import Algorithm.Values;
 import FitnessFunctions.MichalewiczFitnessFunction;
 import FitnessFunctions.RastriginFitnessFunction;
 import FitnessFunctions.SchafferFitnessFunction;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
@@ -24,52 +21,39 @@ import org.jfree.ui.RefineryUtilities;
 public class Main {
     public static void main(String [] args)
     {
-    	
-    	
         
     	ApplicationFrame frame = new ApplicationFrame("Program");
         OptimisationAlgorithm alg = new OptimisationAlgorithm();
 
         if(args.length==0)
         	return;
-        
+
+        //Parsing parameters of optimisation algorithm.
+        if(args.length==2)
+            try {
+                Values.getInstance().loadConfiguration(args[1]);
+            } catch (FileNotFoundException e) {
+                System.out.println("Configuration file not found!");
+            }
+
+        //Optimizing chosen function.
         switch(args[0])
         {
-        case "Rastrigin":
-        	alg.optimize(new RastriginFitnessFunction());
-        Phenotype p = alg.getBestPhenotype().get();
-        System.out.println("Rastrigin:");
-        System.out.println("Ext: x1 = " + p.getX1() + "  x2 = " + p.getX2() +
-                " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
-        break;
-        case "Schaffer":
-        	alg.optimize(new SchafferFitnessFunction());
-            p = alg.getBestPhenotype().get();
-            System.out.println("Schafffer:");
-            System.out.println("Ext: x1 = " + p.getX1() + "  x2 = " + p.getX2() +
-                    " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
-            break;
-        case "Michalewicz":
-        	alg.optimize(new MichalewiczFitnessFunction());
-        p = alg.getBestPhenotype().get();
-        System.out.println("Michalewicz:");
-        System.out.println("Ext: x1 = " + p.getX1() +  "  x2 = " + p.getX2()+
-                " | fitness function value:" + alg.getBestFitnessFunctionValue().get());
-        	break;
-        default:
-        	return;
+        case "Rastrigin": alg.optimize(new RastriginFitnessFunction()); break;
+        case "Schaffer": alg.optimize(new SchafferFitnessFunction()); break;
+        case "Michalewicz": alg.optimize(new MichalewiczFitnessFunction()); break;
+            default: return;
         }
-        
-     
+
+        System.out.println("Optimisation results:");
+        System.out.println("x1~"+alg.getBestPhenotype().get().getX1());
+        System.out.println("x2~"+alg.getBestPhenotype().get().getX2());
+        System.out.println("Value of fitness function ~"+alg.getBestFitnessFunctionValue().get());
+
         frame.setContentPane(generateChart(alg.getBestFitnessFunctionHistory(),alg.getAverageFitnessFunctionHistory()));
         frame.pack();
         RefineryUtilities.centerFrameOnScreen(frame);
         frame.setVisible(true);
-        
-        
-        
-        
-
         
     }
     

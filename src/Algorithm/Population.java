@@ -23,8 +23,8 @@ public class Population {
         {
             population.add(new Phenotype(random.nextDouble()*(fitnessFunction.getMaxPhenotypeX1()-fitnessFunction.getMinPhenotypeX1())+fitnessFunction.getMinPhenotypeX1(),
                     random.nextDouble()*(fitnessFunction.getMaxPhenotypeX2()-fitnessFunction.getMinPhenotypeX2())+fitnessFunction.getMinPhenotypeX2(),
-                    random.nextDouble()*(fitnessFunction.getMaxPhenotypeX1()-fitnessFunction.getMinPhenotypeX1())/5,
-                    random.nextDouble()*(fitnessFunction.getMaxPhenotypeX2()-fitnessFunction.getMinPhenotypeX2())/5));
+                    random.nextDouble()*(fitnessFunction.getMaxPhenotypeX1()-fitnessFunction.getMinPhenotypeX1())*Values.getInstance().getMutationRange(),
+                    random.nextDouble()*(fitnessFunction.getMaxPhenotypeX2()-fitnessFunction.getMinPhenotypeX2())*Values.getInstance().getMutationRange()));
         }
     }
 
@@ -78,16 +78,22 @@ public class Population {
             children.population.addAll(Phenotype.crossingOver(mom, dad));
         }
 
+        Random mutationChance = new Random();
         //Mutating embryos
         children.population = children.population.stream().map(embryo ->
         {
-            Phenotype mutatedEmbryo;
-            do {
-                mutatedEmbryo = new Phenotype(embryo.getX1(), embryo.getX2(), embryo.getSigma1(), embryo.getSigma2());
-                mutatedEmbryo.mutate();
+            if (mutationChance.nextDouble() < Values.getInstance().getMutationProbability()) {
+                Phenotype mutatedEmbryo;
+                do {
+                    mutatedEmbryo = new Phenotype(embryo.getX1(), embryo.getX2(), embryo.getSigma1(), embryo.getSigma2());
+                    mutatedEmbryo.mutate();
+                }
+                while (!fitnessFunction.belongsToDomain(mutatedEmbryo));
+                return mutatedEmbryo;
             }
-            while (!fitnessFunction.belongsToDomain(mutatedEmbryo));
-            return mutatedEmbryo;
+            else
+                return embryo;
+
         }).collect(Collectors.toList());
 
         return children;

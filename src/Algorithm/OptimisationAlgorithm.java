@@ -19,8 +19,8 @@ public class OptimisationAlgorithm {
     public void optimize(FitnessFunction<Phenotype> fitnessFunction) {
 
         int iterationsCounter = 0;
-        double evolutionaryPressure = Values.INITIAL_EVOLUTIONARY_PRESSURE;
-        Population muPopulation = new Population(fitnessFunction,Values.MU);
+        double evolutionaryPressure = Values.getInstance().getInitialEvolutionaryPressure();
+        Population muPopulation = new Population(fitnessFunction,Values.getInstance().getMu());
         Population lambdaPopulation;
 
         bestFitnessFunctionHistory = new LinkedList<>();
@@ -32,24 +32,24 @@ public class OptimisationAlgorithm {
             averageFitnessFunctionHistory.add(muPopulation.getAverageFitnessFunctionValue());
 
             //Choosing individuals that will reproduce.
-            Population designated = muPopulation.designateNewPopulation(Values.LAMBDA);
+            Population designated = muPopulation.designateNewPopulation(Values.getInstance().getLambda());
 
             //Creating children.
             lambdaPopulation = designated.reproduce();
 
             //Choosing the fittest phenotypes that will be preserved in next generation.
-            muPopulation = lambdaPopulation.chooseTheFittest(Values.MU,evolutionaryPressure);
+            muPopulation = lambdaPopulation.chooseTheFittest(Values.getInstance().getMu(),evolutionaryPressure);
 
             /*With each iteration, evolutionary pressure is increased, the purpose of this operation
             is to change way of choosing phenotypes that will stay over time. In the beginning evolutionary
             pressure is low, so algorithm is more focused on exploration of the function domain. This way
             in the beginning we want to make population more diverse. Then algorithm is focused on exploitation.
             That means, using current phenotypes to find optimal points as accurate as it is possible.*/
-            evolutionaryPressure+=Values.EVOLUTIONARY_PRESSURE_DIFFERENCE;
+            evolutionaryPressure+=Values.getInstance().getEvolutionaryPressureDifference();
 
             iterationsCounter++;
         }
-        while(iterationsCounter<Values.ITERATIONS);
+        while(iterationsCounter<Values.getInstance().getIterations());
 
         bestPhenotype = Optional.of(muPopulation.getBestPhenotype());
         bestFitnessFunctionValue = Optional.of(fitnessFunction.applyAsDouble(bestPhenotype.get()));
